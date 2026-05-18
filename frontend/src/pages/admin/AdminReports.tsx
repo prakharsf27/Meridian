@@ -124,7 +124,7 @@ export function AdminReports() {
             <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} axisLine={false} tickLine={false} domain={[0, 100]} />
             <Tooltip
               contentStyle={{ border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 12 }}
-              formatter={(val: number) => [`${val}%`]}
+              formatter={(val) => [typeof val === "number" ? `${val}%` : val]}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Bar dataKey="Q1" fill="#7eb89a" radius={[4, 4, 0, 0]} />
@@ -152,7 +152,7 @@ export function AdminReports() {
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 12 }} formatter={(v: number) => [`${v}%`]} />
+              <Tooltip contentStyle={{ border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 12 }} formatter={(v) => [typeof v === "number" ? `${v}%` : v]} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
             </PieChart>
           </ResponsiveContainer>
@@ -173,7 +173,7 @@ export function AdminReports() {
             >
               <XAxis type="number" tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} domain={[0, 100]} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} width={90} />
-              <Tooltip contentStyle={{ border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 12 }} formatter={(v: number) => [`${v}%`]} />
+              <Tooltip contentStyle={{ border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 12 }} formatter={(v) => [typeof v === "number" ? `${v}%` : v]} />
               <Bar dataKey="rate" fill="#4a8560" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>

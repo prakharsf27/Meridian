@@ -21,12 +21,6 @@ const UNLOCK_REQUESTS = [
 ];
 
 export function AdminDashboard() {
-  const allScores = SEED_EMPLOYEES.flatMap(emp =>
-    emp.goals.map(g => ({
-      score: computeUomScore({ uomType: g.uomType, target: g.target, actual: g.actual }),
-      weightage: g.weightage,
-    }))
-  );
   const overallAvg = Math.round(
     SEED_EMPLOYEES.map(emp => {
       const scores = emp.goals.map(g => ({

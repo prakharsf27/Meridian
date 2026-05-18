@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Target, CheckSquare, FileText,
-  Settings, Users, BarChart3, LogOut, ShieldCheck, Bell
+  Settings, BarChart3, LogOut, ShieldCheck, Bell
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
