@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Plus, Trash2, CheckCircle2, AlertCircle, Info, Lock, Share2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, AlertCircle, Info, Lock, Share2 } from "lucide-react";
 import { validateGoalSheet, UOM_LABELS } from "@/lib/uom";
+import { useApp } from "@/context/AppContext";
 
 interface GoalRow {
   id: number;
@@ -36,8 +37,9 @@ const emptyGoal = (): GoalRow => ({
 });
 
 export function CreateGoalSheet() {
+  const { addGoals, addNotification } = useApp();
+  const navigate = useNavigate();
   const [goals, setGoals] = useState<GoalRow[]>([emptyGoal()]);
-  const [submitted, setSubmitted] = useState(false);
 
   const total = goals.reduce((s, g) => s + Number(g.weightage || 0), 0);
   const errors = validateGoalSheet(goals.map((g, i) => ({ title: g.title, weightage: g.weightage, index: i })));
@@ -58,23 +60,24 @@ export function CreateGoalSheet() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (canSubmit) setSubmitted(true);
+    if (!canSubmit) return;
+    // Push goals into shared context so /employee/goals shows them
+    addGoals(goals.map(g => ({
+      id: g.id.toString(),
+      title: g.title,
+      thrustArea: g.thrustArea,
+      target: g.target,
+      weightage: g.weightage,
+      uomType: g.uomType,
+      isShared: false,
+    })));
+    addNotification({
+      type: "success",
+      title: "Goal Sheet Submitted",
+      message: "Your goal sheet has been submitted for manager review.",
+    });
+    navigate("/employee/goals");
   };
-
-  if (submitted) {
-    return (
-      <div className="max-w-lg mx-auto mt-20 text-center">
-        <div className="w-16 h-16 bg-[#e8f0ea] rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-8 h-8 text-[#2d5a3d]" />
-        </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Goal Sheet Submitted!</h2>
-        <p className="text-gray-500 text-sm mb-6">Your manager will review and approve within 3 business days.</p>
-        <Link to="/employee/dashboard">
-          <Button className="bg-[#2d5a3d] hover:bg-[#4a8560] text-white">Back to Dashboard</Button>
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-5 pb-20">

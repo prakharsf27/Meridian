@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { SEED_EMPLOYEES, type SeedGoal } from "@/lib/seedData";
 
 export type Role = "employee" | "manager" | "admin";
 
@@ -11,6 +12,16 @@ export interface Notification {
   read: boolean;
 }
 
+export interface GoalSheetEntry {
+  id: string;
+  title: string;
+  thrustArea: string;
+  target: string;
+  weightage: number;
+  uomType: "min" | "max" | "timeline" | "zero";
+  isShared: boolean;
+}
+
 interface AppContextType {
   role: Role;
   setRole: (role: Role) => void;
@@ -18,6 +29,11 @@ interface AppContextType {
   addNotification: (n: Omit<Notification, "id" | "timestamp" | "read">) => void;
   markAllRead: () => void;
   unreadCount: number;
+  // Goal sheet state shared across employee pages
+  myGoals: SeedGoal[];
+  addGoals: (goals: GoalSheetEntry[]) => void;
+  sheetStatus: "draft" | "submitted" | "approved";
+  submitSheet: () => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -32,11 +48,14 @@ const SEED_NOTIFICATIONS: Notification[] = [
 export function AppProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<Role>("employee");
   const [notifications, setNotifications] = useState<Notification[]>(SEED_NOTIFICATIONS);
+  // Employee goal sheet state — initialised from seed data so the demo always looks populated
+  const [myGoals, setMyGoals] = useState<SeedGoal[]>(SEED_EMPLOYEES[0].goals);
+  const [sheetStatus, setSheetStatus] = useState<"draft" | "submitted" | "approved">(SEED_EMPLOYEES[0].sheetStatus as any);
 
   const addNotification = useCallback((n: Omit<Notification, "id" | "timestamp" | "read">) => {
     setNotifications(prev => [
       { ...n, id: `n${Date.now()}`, timestamp: new Date(), read: false },
-      ...prev
+      ...prev,
     ]);
   }, []);
 
@@ -44,10 +63,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   }, []);
 
+  const addGoals = useCallback((entries: GoalSheetEntry[]) => {
+    const newGoals: SeedGoal[] = entries.map(e => ({
+      id: `new-${Date.now()}-${Math.random()}`,
+      title: e.title,
+      thrustArea: e.thrustArea,
+      uomType: e.uomType,
+      target: parseFloat(e.target) || 100,
+      actual: 0,
+      weightage: e.weightage,
+      status: "not_started" as const,
+      locked: false,
+      isShared: e.isShared,
+    }));
+    // Replace goals with newly submitted sheet
+    setMyGoals(newGoals);
+    setSheetStatus("submitted");
+  }, []);
+
+  const submitSheet = useCallback(() => {
+    setSheetStatus("submitted");
+  }, []);
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <AppContext.Provider value={{ role, setRole, notifications, addNotification, markAllRead, unreadCount }}>
+    <AppContext.Provider value={{
+      role, setRole,
+      notifications, addNotification, markAllRead, unreadCount,
+      myGoals, addGoals, sheetStatus, submitSheet,
+    }}>
       {children}
     </AppContext.Provider>
   );

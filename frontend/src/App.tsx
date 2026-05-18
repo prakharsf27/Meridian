@@ -7,6 +7,8 @@ import { LoginPage } from "./pages/LoginPage";
 
 // Employee
 import { EmployeeDashboard } from "./pages/employee/EmployeeDashboard";
+import { EmployeeGoals } from "./pages/employee/EmployeeGoals";
+import { EmployeeCheckIn } from "./pages/employee/EmployeeCheckIn";
 import { CreateGoalSheet } from "./pages/employee/CreateGoalSheet";
 
 // Manager
@@ -29,11 +31,11 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to="/login" replace />} />
 
-            {/* Employee */}
+            {/* Employee — each nav item has its own dedicated page */}
             <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+            <Route path="/employee/goals" element={<EmployeeGoals />} />
             <Route path="/employee/goals/create" element={<CreateGoalSheet />} />
-            <Route path="/employee/goals" element={<EmployeeDashboard />} />
-            <Route path="/employee/checkin" element={<EmployeeDashboard />} />
+            <Route path="/employee/checkin" element={<EmployeeCheckIn />} />
 
             {/* Manager */}
             <Route path="/manager/dashboard" element={<ManagerDashboard />} />
