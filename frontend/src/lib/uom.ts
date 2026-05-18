@@ -103,7 +103,7 @@ export function validateGoalSheet(
   }
 
   goals.forEach(g => {
-    if (g.weightage < 10) {
+    if (g.weightage > 0 && g.weightage < 10) {
       errors.push(`Goal #${g.index + 1} "${g.title || "Untitled"}" is below the 10% minimum. Adjust before submitting.`);
     }
   });

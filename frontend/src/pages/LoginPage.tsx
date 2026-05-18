@@ -28,6 +28,7 @@ export function LoginPage() {
 
   const handleDemoLogin = (acc: typeof DEMO_ACCOUNTS[number]) => {
     setEmail(acc.email);
+    setPassword(acc.password);
     setSelectedRole(acc.role);
   };
 

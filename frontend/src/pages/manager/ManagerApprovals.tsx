@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, CornerUpLeft, Share2, ArrowLeft } from "lucide-react";
 import { SEED_EMPLOYEES } from "@/lib/seedData";
@@ -16,6 +16,7 @@ function UomBadge({ type }: { type: string }) {
 
 // Pending-only list shown when no empId param
 function PendingList() {
+  const navigate = useNavigate();
   const pending = SEED_EMPLOYEES.filter(e => e.sheetStatus === "submitted");
   return (
     <div className="max-w-5xl mx-auto space-y-5">
@@ -33,32 +34,37 @@ function PendingList() {
           const scores = emp.goals.map(g => computeUomScore({ uomType: g.uomType, target: g.target, actual: g.actual }));
           const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
           return (
-            <Link key={emp.id} to={`/manager/approvals/${emp.id}`}>
-              <div className="bg-white rounded-xl border border-gray-200 hover:border-[#2d5a3d] hover:bg-[#e8f0ea]/20 transition-all p-5 flex items-center justify-between group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full ${emp.avatarColor} text-white font-bold flex items-center justify-center text-sm flex-shrink-0`}>
-                    {emp.initials}
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900 group-hover:text-[#2d5a3d] transition-colors">{emp.name}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{emp.role} · {emp.employeeCode} · Submitted 2 Jun 2026</div>
-                  </div>
+            <div
+              key={emp.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/manager/approvals/${emp.id}`)}
+              onKeyDown={e => e.key === "Enter" && navigate(`/manager/approvals/${emp.id}`)}
+              className="bg-white rounded-xl border border-gray-200 hover:border-[#2d5a3d] hover:bg-[#e8f0ea]/20 transition-all p-5 flex items-center justify-between group cursor-pointer"
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-full ${emp.avatarColor} text-white font-bold flex items-center justify-center text-sm flex-shrink-0`}>
+                  {emp.initials}
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className="text-[10px] text-gray-400 uppercase font-bold">Goals</div>
-                    <div className="font-bold text-gray-800">{emp.goals.length}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[10px] text-gray-400 uppercase font-bold">Avg Score</div>
-                    <div className="font-bold text-[#2d5a3d]">{avg}%</div>
-                  </div>
-                  <span className="px-3 py-1.5 text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 rounded-md">
-                    Review →
-                  </span>
+                <div>
+                  <div className="font-bold text-gray-900 group-hover:text-[#2d5a3d] transition-colors">{emp.name}</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{emp.role} · {emp.employeeCode} · Submitted 2 Jun 2026</div>
                 </div>
               </div>
-            </Link>
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <div className="text-[10px] text-gray-400 uppercase font-bold">Goals</div>
+                  <div className="font-bold text-gray-800">{emp.goals.length}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-gray-400 uppercase font-bold">Avg Score</div>
+                  <div className="font-bold text-[#2d5a3d]">{avg}%</div>
+                </div>
+                <span className="px-3 py-1.5 text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 rounded-md">
+                  Review →
+                </span>
+              </div>
+            </div>
           );
         })}
       </div>
@@ -67,22 +73,27 @@ function PendingList() {
         <h2 className="font-bold text-gray-700 text-sm mb-3">All team members</h2>
         <div className="space-y-2">
           {SEED_EMPLOYEES.filter(e => e.sheetStatus !== "submitted").map(emp => (
-            <Link key={emp.id} to={`/manager/approvals/${emp.id}`}>
-              <div className="bg-white rounded-xl border border-gray-100 hover:border-[#2d5a3d]/30 transition-all px-5 py-3.5 flex items-center justify-between group">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full ${emp.avatarColor} text-white font-bold flex items-center justify-center text-xs flex-shrink-0`}>
-                    {emp.initials}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-800 text-[13px] group-hover:text-[#2d5a3d]">{emp.name}</div>
-                    <div className="text-[11px] text-gray-400">{emp.role}</div>
-                  </div>
+            <div
+              key={emp.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/manager/approvals/${emp.id}`)}
+              onKeyDown={e => e.key === "Enter" && navigate(`/manager/approvals/${emp.id}`)}
+              className="bg-white rounded-xl border border-gray-100 hover:border-[#2d5a3d]/30 transition-all px-5 py-3.5 flex items-center justify-between group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full ${emp.avatarColor} text-white font-bold flex items-center justify-center text-xs flex-shrink-0`}>
+                  {emp.initials}
                 </div>
-                <span className={`px-2 py-0.5 text-[11px] font-semibold rounded border ${
-                  emp.sheetStatus === "approved" ? "bg-[#e8f0ea] text-[#2d5a3d] border-[#2d5a3d]/30" : "bg-gray-100 text-gray-500 border-gray-200"
-                }`}>{emp.sheetStatus === "approved" ? "Approved" : "Draft"}</span>
+                <div>
+                  <div className="font-semibold text-gray-800 text-[13px] group-hover:text-[#2d5a3d]">{emp.name}</div>
+                  <div className="text-[11px] text-gray-400">{emp.role}</div>
+                </div>
               </div>
-            </Link>
+              <span className={`px-2 py-0.5 text-[11px] font-semibold rounded border ${
+                emp.sheetStatus === "approved" ? "bg-[#e8f0ea] text-[#2d5a3d] border-[#2d5a3d]/30" : "bg-gray-100 text-gray-500 border-gray-200"
+              }`}>{emp.sheetStatus === "approved" ? "Approved" : "Draft"}</span>
+            </div>
           ))}
         </div>
       </div>

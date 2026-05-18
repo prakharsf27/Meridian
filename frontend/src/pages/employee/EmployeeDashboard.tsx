@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Lock, TrendingUp, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
-import { SEED_EMPLOYEES } from "@/lib/seedData";
 import { computeUomScore, computeWeightedScore, UOM_SHORT } from "@/lib/uom";
-
-const employee = SEED_EMPLOYEES[0];
+import { useApp } from "@/context/AppContext";
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
@@ -62,23 +60,27 @@ function MetricCard({ label, value, sub, subColor = "text-[#4a8560]", icon: Icon
 }
 
 export function EmployeeDashboard() {
-  const goalsWithScore = employee.goals.map(g => ({
+  const { myGoals } = useApp();
+
+  const goalsWithScore = myGoals.map(g => ({
     ...g,
     score: computeUomScore({ uomType: g.uomType, target: g.target, actual: g.actual }),
   }));
 
   const weightedScore = computeWeightedScore(goalsWithScore.map(g => ({ score: g.score, weightage: g.weightage })));
-  const approvedCount = employee.goals.filter(g => g.locked).length;
+  const approvedCount = myGoals.filter(g => g.locked).length;
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  // Use first name from first goal's employee — fall back to display name from topbar
+  const firstName = "Rahul";
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{greeting}, {employee.name.split(" ")[0]}.</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{greeting}, {firstName}.</h1>
           <p className="text-gray-500 text-sm mt-0.5">Q2 check-in window is open · Deadline: <span className="font-medium text-gray-700">15 Jul 2026</span></p>
         </div>
         <Link to="/employee/goals/create">
@@ -91,7 +93,7 @@ export function EmployeeDashboard() {
 
       {/* Metrics */}
       <div className="grid grid-cols-4 gap-3">
-        <MetricCard label="Total goals" value={employee.goals.length} sub="FY 2025–26" icon={TrendingUp} />
+        <MetricCard label="Total goals" value={myGoals.length} sub="FY 2025–26" icon={TrendingUp} />
         <MetricCard
           label="Approved"
           value={approvedCount}

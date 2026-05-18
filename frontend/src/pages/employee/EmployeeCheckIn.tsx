@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertCircle, Clock, Lock, TrendingUp } from "lucide-react";
-import { SEED_EMPLOYEES } from "@/lib/seedData";
 import { computeUomScore } from "@/lib/uom";
 import { useApp } from "@/context/AppContext";
-
-const employee = SEED_EMPLOYEES[0];
 
 const PAST_CHECKINS = [
   {
@@ -18,11 +15,11 @@ const PAST_CHECKINS = [
 ];
 
 export function EmployeeCheckIn() {
-  const { addNotification } = useApp();
+  const { addNotification, myGoals } = useApp();
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const goalsWithScore = employee.goals.map(g => ({
+  const goalsWithScore = myGoals.map(g => ({
     ...g,
     score: computeUomScore({ uomType: g.uomType, target: g.target, actual: g.actual }),
   }));

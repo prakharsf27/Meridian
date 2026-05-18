@@ -34,7 +34,8 @@ const ADMIN_NAV: NavItem[] = [
 
 function NavItemRow({ item }: { item: NavItem }) {
   const location = useLocation();
-  const active = location.pathname === item.to;
+  // Use startsWith so nested routes (e.g. /manager/approvals/emp2) keep the parent highlighted
+  const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
   const Icon = item.icon;
 
   return (
@@ -52,7 +53,7 @@ function NavItemRow({ item }: { item: NavItem }) {
       </div>
       {item.badge !== undefined && (
         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${
-          active ? "bg-[#2d5a3d] text-white" : "bg-[#2d5a3d] text-white"
+          active ? "bg-[#2d5a3d]/20 text-[#2d5a3d]" : "bg-[#2d5a3d] text-white"
         }`}>
           {item.badge}
         </span>
