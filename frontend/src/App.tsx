@@ -14,6 +14,7 @@ import { CreateGoalSheet } from "./pages/employee/CreateGoalSheet";
 // Manager
 import { ManagerDashboard } from "./pages/manager/ManagerDashboard";
 import { ManagerApprovals } from "./pages/manager/ManagerApprovals";
+import { ManagerReviews } from "./pages/manager/ManagerReviews";
 
 // Admin
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
@@ -31,16 +32,17 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to="/login" replace />} />
 
-            {/* Employee — each nav item has its own dedicated page */}
+            {/* Employee */}
             <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
             <Route path="/employee/goals" element={<EmployeeGoals />} />
             <Route path="/employee/goals/create" element={<CreateGoalSheet />} />
             <Route path="/employee/checkin" element={<EmployeeCheckIn />} />
 
-            {/* Manager */}
+            {/* Manager — :empId is optional; without it shows the pending list */}
             <Route path="/manager/dashboard" element={<ManagerDashboard />} />
             <Route path="/manager/approvals" element={<ManagerApprovals />} />
-            <Route path="/manager/reviews" element={<ManagerDashboard />} />
+            <Route path="/manager/approvals/:empId" element={<ManagerApprovals />} />
+            <Route path="/manager/reviews" element={<ManagerReviews />} />
 
             {/* Admin */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

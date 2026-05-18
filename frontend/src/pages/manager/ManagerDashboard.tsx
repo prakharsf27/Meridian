@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Clock, CheckCircle, Users } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { SEED_EMPLOYEES } from "@/lib/seedData";
 import { computeUomScore, computeWeightedScore } from "@/lib/uom";
 
@@ -54,6 +54,7 @@ function MetricCard({ label, value, sub, subColor = "text-[#4a8560]", warn }: an
 const CHECKIN_STATUS = ["Submitted", "Not due", "Not due", "Reviewed"];
 
 export function ManagerDashboard() {
+  const navigate = useNavigate();
   const employees = SEED_EMPLOYEES;
   const pendingCount = employees.filter(e => e.sheetStatus === "submitted").length;
 
@@ -102,16 +103,21 @@ export function ManagerDashboard() {
               <th className="text-left px-3 py-2.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
               <th className="text-left px-3 py-2.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider w-40">Q2 Progress</th>
               <th className="text-left px-3 py-2.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider">Check-in</th>
+              <th className="w-8"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {employeesWithScore.map((emp, i) => (
-              <tr key={emp.id} className="hover:bg-gray-50/50 transition-colors cursor-pointer">
+              <tr
+                key={emp.id}
+                onClick={() => navigate(`/manager/approvals/${emp.id}`)}
+                className="hover:bg-[#e8f0ea]/40 transition-colors cursor-pointer group"
+              >
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
                     <Avatar name={emp.name} color={emp.avatarColor} />
                     <div>
-                      <div className="font-semibold text-gray-900 text-[13px]">{emp.name}</div>
+                      <div className="font-semibold text-gray-900 text-[13px] group-hover:text-[#2d5a3d] transition-colors">{emp.name}</div>
                       <div className="text-[11px] text-gray-400">{emp.role}</div>
                     </div>
                   </div>
@@ -127,6 +133,9 @@ export function ManagerDashboard() {
                   </div>
                 </td>
                 <td className="px-3 py-3.5"><CheckInBadge status={CHECKIN_STATUS[i] ?? "Not due"} /></td>
+                <td className="px-3 py-3.5 text-gray-300 group-hover:text-[#4a8560]">
+                  <ChevronRight className="w-4 h-4" />
+                </td>
               </tr>
             ))}
           </tbody>
