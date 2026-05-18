@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+backend/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
