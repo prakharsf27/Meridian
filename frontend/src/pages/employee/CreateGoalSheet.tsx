@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Plus, Trash2, AlertCircle, Info, Lock, Share2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, AlertCircle, CheckCircle2, Info, Lock, Share2 } from "lucide-react";
 import { validateGoalSheet, UOM_LABELS } from "@/lib/uom";
 import { useApp } from "@/context/AppContext";
 
@@ -122,7 +122,7 @@ export function CreateGoalSheet() {
       </div>
 
       {/* Validation errors */}
-      {submitted === false && errors.length > 0 && goals.some(g => g.title || g.weightage) && (
+      {errors.length > 0 && goals.some(g => g.title || g.weightage) && (
         <div className="bg-[#fdf0f0] border border-[#8b2e2e]/30 rounded-xl p-4 space-y-1.5">
           {errors.map((err, i) => (
             <div key={i} className="flex items-start gap-2 text-sm text-[#8b2e2e]">
